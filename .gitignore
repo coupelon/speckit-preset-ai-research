@@ -1,0 +1,22 @@
+# Fichiers generes par Spec Kit lors de l'utilisation
+.specify/
+specs/
+
+# Fichiers de configuration MCP personnalises (contiennent des chemins locaux et emails)
+# Utiliser opencode.json et .mcp.json du preset comme templates
+opencode.local.json
+
+# Dependances et caches
+node_modules/
+__pycache__/
+.uv/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo

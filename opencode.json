@@ -1,0 +1,30 @@
+{
+  "mcp": {
+    "paper-search": {
+      "type": "local",
+      "command": ["uv", "run", "--directory", "/path/to/paper-search-mcp", "-m", "paper_search_mcp.server"]
+    },
+    "openalex": {
+      "type": "local",
+      "command": ["npx", "-y", "openalex-mcp"],
+      "environment": {
+        "OPENALEX_EMAIL": "your-email@example.com"
+      }
+    },
+    "arxiv": {
+      "type": "local",
+      "command": ["npx", "-y", "@fre4x/arxiv"]
+    },
+    "web-search": {
+      "type": "local",
+      "command": ["npx", "-y", "@iflow-mcp/open-websearch"],
+      "environment": {
+        "MODE": "stdio"
+      }
+    },
+    "web-fetch": {
+      "type": "local",
+      "command": ["uvx", "mcp-server-fetch"]
+    }
+  }
+}
