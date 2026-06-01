@@ -32,6 +32,13 @@ CRITICAL :
 | Recence | /15 | Date de publication | Penalite par annee d'anciennete |
 | Replicabilite | /20 | Analyse du contenu | Code/methodo/donnees disponibles |
 
+CRITICAL : Les criteres **Applicabilite** et **Replicabilite** exigent le contenu reel de la source.
+Si la piste a `source_status` != `full_text` (contenu non telecharge), ces deux criteres ne peuvent
+pas etre evalues de maniere fiable : les plafonner et le signaler dans la justification
+(ex: "evalue sur resume seul — texte integral non disponible"). Si l'utilisateur a depose
+manuellement un PDF dans `sources/[axe]/`, le lire et mettre a jour `source_status` a `full_text`
+(et `content_incomplete` a `false`) lors du re-scoring.
+
 ## Workflow
 
 ### Etape 1 — Identification
@@ -116,7 +123,8 @@ Pour chaque piste :
 
 ### Etape 4 — Mise a jour
 
-1. `leads.json` : mettre a jour le score, les sous-scores et la date d'evaluation
+1. `leads.json` : mettre a jour le score, les sous-scores, la date d'evaluation et, si le contenu
+   a ete obtenu depuis, `source_status` / `content_incomplete`
 2. `leads/LXXXX-slug.md` : mettre a jour la section scoring
 3. Si le score passe au-dessus du seuil → ajouter a `references.bib` si absent
 4. Si le score passe en-dessous du seuil → signaler (ne pas supprimer de references.bib)

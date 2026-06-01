@@ -38,9 +38,13 @@ specify preset add --dev ./speckit-research-preset
 # 2. Copier le fichier de contexte a la racine du projet
 cp speckit-research-preset/AGENTS.md ./AGENTS.md
 
-# 3. Copier la config MCP adaptee a votre outil AI
-cp speckit-research-preset/opencode.json ./opencode.json    # OpenCode
-cp speckit-research-preset/.mcp.json ./.mcp.json            # Claude Code
+# 3. Copier la config MCP adaptee a votre outil AI (UNE seule des deux lignes)
+
+# -> Si vous utilisez Claude Code :
+cp speckit-research-preset/.mcp.json ./.mcp.json
+
+# -> Si vous utilisez OpenCode :
+cp speckit-research-preset/opencode.json ./opencode.json
 ```
 
 ## Configuration

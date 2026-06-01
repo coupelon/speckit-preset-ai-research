@@ -85,9 +85,33 @@ Selon l'axe de la piste :
 | Industriel | `web-search` / `searxng` | `web-fetch` (page par page) | — |
 | Public | `web-search` / `searxng` | `web-fetch` (page) ou `paper-search` (si rapport indexe) | — |
 
-Pour chaque source :
-- Telecharger le contenu dans `sources/[academic|industry|public]/`
-- Recuperer les metriques auteurs via `openalex` si academique
+CRITICAL : L'analyse d'une piste DOIT s'appuyer sur le contenu reel de la source, pas seulement
+sur son titre, son resume ou ses metadonnees. Pour chaque source :
+
+1. **Tenter le telechargement du contenu complet** et l'enregistrer dans
+   `sources/[academic|industry|public]/` :
+   - Academique : `paper-search` (texte complet via Sci-Hub) puis, en repli, `arxiv` (PDF du preprint)
+   - Industriel / Public : `web-fetch` (page par page)
+2. **Recuperer les metriques auteurs** via `openalex` si la source est academique.
+3. **Determiner et enregistrer le statut de recuperation** (`source_status`) de la source :
+
+| Statut | Signification |
+|--------|---------------|
+| `full_text` | Contenu complet telecharge et lu (PDF, page web, rapport) |
+| `abstract_only` | Seul le resume/abstract a pu etre obtenu (pas de texte integral) |
+| `metadata_only` | Uniquement titre/auteurs/date (ni resume ni texte) |
+| `failed` | Aucun acces (paywall, lien mort, Sci-Hub indisponible, format non supporte) |
+
+CRITICAL : NE PAS pretendre avoir lu un article dont seul le titre ou le resume est accessible.
+- Si `source_status` n'est pas `full_text`, l'analyse et le scoring se basent sur les seules
+  donnees reellement obtenues, et la piste est marquee comme **incomplete** (voir Etape 5).
+- Ne JAMAIS attribuer un score eleve sur l'applicabilite ou la replicabilite quand le texte
+  integral n'a pas ete lu : ces criteres exigent le contenu reel.
+
+**Pourquoi des telechargements echouent souvent (academique) :** c'est attendu. De nombreux
+articles sont derriere un paywall, absents de Sci-Hub, ou disponibles uniquement en preprint.
+L'objectif n'est pas de tout telecharger, mais de **rendre visible** ce qui n'a pas pu l'etre
+plutot que de scorer en aveugle sur un resume.
 
 **Etape 3 — Analyse et fiche**
 
@@ -124,7 +148,9 @@ Calculer le score de confiance (0-100) selon la grille de la constitution :
 
 **Etape 5 — Mise a jour**
 
-1. `leads.json` : piste → `"explored"`, score, nouvelles pistes `"pending"` (dedupliquees)
+1. `leads.json` : piste → `"explored"`, score, `source_status`, nouvelles pistes `"pending"` (dedupliquees)
+   - Si `source_status` vaut `abstract_only`, `metadata_only` ou `failed` : ajouter `"content_incomplete": true`
+     sur la piste afin qu'elle apparaisse dans la liste des articles a retelecharger.
 2. `ontology.md` : integrer les idees avec references [LXXXX]
 3. `references.bib` : si score >= seuil constitution, ajouter :
 ```bibtex
@@ -152,10 +178,45 @@ Apres chaque piste :
 ```
 Piste LXXXX : [Titre]
   Outil MCP : [paper-search|arxiv|web-fetch] | Axe : [academique/industriel/public]
+  Contenu : [full_text | abstract_only | metadata_only | failed]
   Score : XX/100
   Nouvelles pistes : +N | References.bib : [Oui/Non]
   Checkpoint dans : Z pistes
 ```
+
+## Resume de fin d'execution
+
+A la fin de l'execution de `/speckit.plan` (apres la ou les pistes traitees), TOUJOURS afficher
+un bilan de couverture du contenu. Cela evite que des pistes soient elaborees uniquement sur
+des resumes sans que l'utilisateur s'en apercoive.
+
+```
+=== Bilan contenu ===
+
+Pistes traitees : N
+  - full_text     : X  (contenu complet lu)
+  - abstract_only : X  (resume seul)
+  - metadata_only : X  (metadonnees seules)
+  - failed        : X  (aucun acces)
+```
+
+Si au moins une piste n'est pas en `full_text`, afficher en plus la liste des articles
+restant a telecharger, pour permettre une recuperation manuelle ou un nouvel essai :
+
+```
+=== Articles a (re)telecharger — contenu non atteint ===
+
+| ID    | Statut         | Titre              | URL / DOI         | Piste a retenter |
+|-------|----------------|--------------------|-------------------|------------------|
+| LXXXX | abstract_only  | [titre complet]    | [DOI ou URL]      | /speckit.plan LXXXX |
+| LXXXX | failed         | [titre complet]    | [DOI ou URL]      | /speckit.plan LXXXX |
+
+Pistes concernees : N (toutes les pistes avec "content_incomplete": true dans leads.json)
+Suggestions : reessayer plus tard (Sci-Hub intermittent), chercher un preprint sur `arxiv`,
+ou recuperer le PDF manuellement et le deposer dans sources/[axe]/.
+```
+
+Si toutes les pistes sont en `full_text`, indiquer simplement : `Toutes les sources ont ete recuperees integralement.`
 
 ## Prochaine etape
 

@@ -44,6 +44,23 @@ Par axe :
   - public : X explored (moy: XX) | Y pending
 
 References.bib : X entrees (seuil >= 60)
+
+Contenu des sources :
+  - full_text     : X
+  - abstract_only : X
+  - metadata_only : X
+  - failed        : X
+```
+
+Si des pistes ont `"content_incomplete": true` dans `leads.json`, lister les articles dont le
+contenu n'a pas ete atteint, pour permettre de les retelecharger avant de conclure :
+
+```
+Articles a (re)telecharger (contenu non atteint) :
+  | ID    | Statut        | Titre           | URL / DOI    |
+  |-------|---------------|-----------------|--------------|
+  | LXXXX | abstract_only | [titre complet] | [DOI ou URL] |
+  | LXXXX | failed        | [titre complet] | [DOI ou URL] |
 ```
 
 ### Etape 2 — Couverture des questions
@@ -86,6 +103,7 @@ Generer des alertes si :
 - Une question P1 est NON COUVERTE (alerte : **critique**)
 - Le ratio pending/explored > 3 (alerte : **explosion des pistes**)
 - Aucune nouvelle piste generee sur les 5 dernieres explorations (alerte : **saturation**)
+- Plus de 30% des pistes explorees n'ont pas de contenu complet (`source_status` != `full_text`) (alerte : **contenu superficiel**)
 
 ### Etape 5 — Decision
 

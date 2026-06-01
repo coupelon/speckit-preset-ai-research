@@ -121,6 +121,15 @@ Cree le repertoire `specs/001-impact-agents-llm/` avec :
 
 Pour chaque piste : recherche via MCP, collecte du contenu, creation de la fiche, scoring multicriteres, mise a jour de leads.json/ontology.md/references.bib, verification du checkpoint.
 
+**Contenu des sources et articles non telecharges.** Le contenu complet d'un article academique
+n'est pas toujours accessible (paywall, absence de Sci-Hub, preprint uniquement) : c'est normal.
+Chaque piste enregistre donc un `source_status` (`full_text`, `abstract_only`, `metadata_only`,
+`failed`). A la fin de `/speckit.plan`, un **bilan contenu** indique combien de pistes ont ete
+analysees sur leur texte integral, et liste les articles restant a (re)telecharger avec leur ID,
+leur statut et leur DOI/URL. Pour reessayer une piste : `/speckit.plan LXXXX`. Vous pouvez aussi
+deposer manuellement un PDF dans `sources/[axe]/` puis re-scorer via `/speckit.research.score LXXXX`.
+Le checkpoint reprend ce bilan pour eviter de conclure une recherche sur des sources superficielles.
+
 ### Etape 4 — Checkpoint (automatique toutes les N pistes)
 
 ```
@@ -198,6 +207,8 @@ Le preset route automatiquement vers le bon outil, mais voici la logique explici
       "added_at": "2026-04-13T10:00:00Z",
       "explored_at": "2026-04-13T11:00:00Z",
       "source_lead": null,
+      "source_status": "full_text",
+      "content_incomplete": false,
       "questions": ["Q1", "Q2"],
       "score": {
         "total": 78,

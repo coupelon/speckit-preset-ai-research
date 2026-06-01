@@ -13,10 +13,15 @@
 | Axe | [academique / industriel / public] |
 | URL | [URL de la source] |
 | Fichier local | sources/[axe]/[fichier] |
+| Statut du contenu | [full_text / abstract_only / metadata_only / failed] |
 
 ## Resume
 
 [3-5 phrases synthetisant le contenu de la source]
+
+> Si le statut du contenu n'est pas `full_text`, le preciser ici : indiquer sur quelles donnees
+> repose l'analyse (resume seul, metadonnees seules) et pourquoi le texte integral n'a pas pu
+> etre obtenu (paywall, Sci-Hub indisponible, lien mort...). Cette piste reste a retelecharger.
 
 ## Idees cles
 
