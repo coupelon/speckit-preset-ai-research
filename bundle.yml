@@ -1,0 +1,41 @@
+schema_version: "1.0"
+
+bundle:
+  id: "ai-research"
+  name: "AI Research"
+  version: "1.0.0"
+  role: "researcher"
+  description: "Transforme le workflow spec-driven en framework de recherche systematique iterative : exploration de pistes scorees, checkpoints de synthese, ontologie des idees et references BibLaTeX"
+  author: "Olivier Coupelon"
+  license: "MIT"
+
+requires:
+  speckit_version: ">=0.14.0"
+  tools:
+    - "node"
+    - "uv"
+  mcp:
+    - "paper-search"
+    - "openalex"
+    - "arxiv"
+    - "web-search"
+    - "web-fetch"
+
+provides:
+  # L'extension apporte l'activite nouvelle (exploration, checkpoints, scoring).
+  extensions:
+    - id: "research"
+      version: "1.0.0"
+
+  # Le preset localise les creneaux core en vocabulaire recherche.
+  presets:
+    - id: "ai-research"
+      version: "1.0.0"
+      priority: 10
+      strategy: "replace"
+
+tags:
+  - "research"
+  - "methodology"
+  - "academic"
+  - "scoring"

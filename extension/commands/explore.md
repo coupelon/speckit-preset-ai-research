@@ -7,8 +7,10 @@ $ARGUMENTS
 
 ## Contexte
 
-Le "Plan" dans le contexte recherche correspond a l'exploration des pistes.
-C'est le coeur du framework : une boucle iterative qui collecte, analyse, score et trace chaque piste.
+L'exploration est le coeur du framework : une boucle iterative qui collecte, analyse, score et
+trace chaque piste. C'est le travail de recherche reel — il ne correspond a aucun creneau du
+cycle Spec Kit standard, d'ou une commande propre a l'extension plutot qu'un remplacement de
+`/speckit.plan`.
 
 ## Pre-requis
 
@@ -115,7 +117,8 @@ plutot que de scorer en aveugle sur un resume.
 
 **Etape 3 — Analyse et fiche**
 
-Creer `leads/LXXXX-slug.md` selon le template plan-template.md avec :
+Creer `leads/LXXXX-slug.md` selon le template
+`.specify/extensions/research/templates/lead-template.md` avec :
 - Resume (3-5 phrases)
 - Idees cles avec chemin dans l'ontologie
 - Approche proposee par les auteurs
@@ -186,7 +189,7 @@ Piste LXXXX : [Titre]
 
 ## Resume de fin d'execution
 
-A la fin de l'execution de `/speckit.plan` (apres la ou les pistes traitees), TOUJOURS afficher
+A la fin de l'execution de `/speckit.research.explore` (apres la ou les pistes traitees), TOUJOURS afficher
 un bilan de couverture du contenu. Cela evite que des pistes soient elaborees uniquement sur
 des resumes sans que l'utilisateur s'en apercoive.
 
@@ -208,8 +211,8 @@ restant a telecharger, pour permettre une recuperation manuelle ou un nouvel ess
 
 | ID    | Statut         | Titre              | URL / DOI         | Piste a retenter |
 |-------|----------------|--------------------|-------------------|------------------|
-| LXXXX | abstract_only  | [titre complet]    | [DOI ou URL]      | /speckit.plan LXXXX |
-| LXXXX | failed         | [titre complet]    | [DOI ou URL]      | /speckit.plan LXXXX |
+| LXXXX | abstract_only  | [titre complet]    | [DOI ou URL]      | /speckit.research.explore LXXXX |
+| LXXXX | failed         | [titre complet]    | [DOI ou URL]      | /speckit.research.explore LXXXX |
 
 Pistes concernees : N (toutes les pistes avec "content_incomplete": true dans leads.json)
 Suggestions : reessayer plus tard (Sci-Hub intermittent), chercher un preprint sur `arxiv`,
@@ -221,6 +224,6 @@ Si toutes les pistes sont en `full_text`, indiquer simplement : `Toutes les sour
 ## Prochaine etape
 
 - Checkpoint atteint → `/speckit.research.checkpoint`
-- Pistes restantes → continuer `/speckit.plan`
+- Pistes restantes → continuer `/speckit.research.explore`
 - Re-evaluer → `/speckit.research.score L0042`
 - Plus de pistes → `/speckit.implement`

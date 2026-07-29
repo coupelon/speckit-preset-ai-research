@@ -7,8 +7,9 @@ $ARGUMENTS
 
 ## Contexte
 
-Le "Tasks" dans le contexte recherche correspond a l'evaluation et la comparaison des pistes explorees.
-C'est l'etape qui transforme une liste brute de pistes en un classement actionnable.
+Le tableau de bord evalue et compare les pistes explorees. C'est l'etape qui transforme une
+liste brute de pistes en un classement actionnable — pas un decoupage en taches : le creneau
+`/speckit.tasks` du cycle Spec Kit n'a pas d'equivalent dans cette methodologie.
 
 ## Pre-requis
 
@@ -20,6 +21,7 @@ CRITICAL : Verifier que les fichiers suivants existent dans le repertoire du suj
 
 ### Mode 1 : Tableau de bord (par defaut, sans arguments)
 
+Suivre la structure de `.specify/extensions/research/templates/dashboard-template.md`.
 Generer un tableau recapitulatif de toutes les pistes explorees :
 
 ```
@@ -97,7 +99,7 @@ Gaps identifies :
 
 ## Prochaine etape
 
-- Gaps identifies → `/speckit.plan` pour explorer les lacunes
+- Gaps identifies → `/speckit.research.explore` pour explorer les lacunes
 - Pistes suffisantes → `/speckit.implement` pour produire le livrable
 - Re-evaluer une piste → `/speckit.research.score L0042`
 - Synthese intermediaire → `/speckit.research.checkpoint`

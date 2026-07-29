@@ -1,0 +1,42 @@
+schema_version: "1.0"
+
+extension:
+  id: "research"
+  name: "AI Research"
+  version: "1.0.0"
+  description: "Recherche systematique iterative : exploration de pistes scorees, checkpoints de synthese et ontologie des idees, via une stack MCP academique"
+  author: "Olivier Coupelon"
+  license: "MIT"
+  category: "research"
+  effect: "read-write"
+
+requires:
+  speckit_version: ">=0.14.0"
+
+provides:
+  commands:
+    # Le coeur du framework : la boucle d'exploration qui collecte, analyse,
+    # score et trace chaque piste. C'est l'activite que le cycle de vie core
+    # ne connait pas — d'ou l'extension plutot que le preset.
+    - name: "speckit.research.explore"
+      file: "commands/explore.md"
+      description: "Explorer iterativement les pistes avec scoring de confiance et outils MCP"
+
+    # Quality gate : synthese intermediaire toutes les N pistes.
+    - name: "speckit.research.checkpoint"
+      file: "commands/checkpoint.md"
+      description: "Synthese intermediaire et validation de la couverture des questions"
+
+    - name: "speckit.research.score"
+      file: "commands/score.md"
+      description: "Scorer ou re-evaluer une piste avec metriques MCP"
+
+    - name: "speckit.research.dashboard"
+      file: "commands/dashboard.md"
+      description: "Tableau de bord : evaluer, comparer et trier les pistes par score"
+
+tags:
+  - "research"
+  - "methodology"
+  - "academic"
+  - "scoring"

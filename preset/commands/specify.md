@@ -99,4 +99,4 @@ Creer dans `specs/###-slug-du-sujet/` :
 
 ## Prochaine etape
 
-Suggerer : `/speckit.plan` pour commencer l'exploration des pistes.
+Suggerer : `/speckit.research.explore` pour commencer l'exploration des pistes.

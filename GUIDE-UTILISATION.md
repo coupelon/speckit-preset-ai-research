@@ -5,10 +5,11 @@ Ce document complete le [README](README.md) avec les instructions pas a pas, les
 ## Checklist de demarrage rapide
 
 ```
-[ ] Spec Kit >= 0.6.0 installe
+[ ] Spec Kit >= 0.14.0 installe
 [ ] Node.js >= 18 installe
 [ ] uv installe
-[ ] specify preset add --dev ./speckit-research-preset
+[ ] specify extension add --dev ./extension
+[ ] specify preset add --dev ./preset
 [ ] Copier la config MCP a la racine du projet (voir README > Configuration)
 [ ] cp AGENTS.md a la racine du projet
 [ ] Lancer votre outil AI et verifier que les MCP se connectent
@@ -17,15 +18,50 @@ Ce document complete le [README](README.md) avec les instructions pas a pas, les
 
 ## Notes d'installation
 
-Le flag `--dev` est necessaire pour installer un preset depuis un chemin local. Sans ce flag, Spec Kit cherche dans son catalogue en ligne et retourne une erreur "not found in catalog".
+### Ordre des deux composants
+
+Installer l'**extension avant le preset**. Les stubs `/speckit.plan` et `/speckit.tasks` du preset
+renvoient vers les commandes `speckit.research.*` : sans l'extension, la redirection pointe dans
+le vide.
+
+### Pourquoi deux composants
+
+Spec Kit filtre les commandes a trois segments (`speckit.<ext-id>.<cmd>`) : elles ne sont
+enregistrees que si `.specify/extensions/<ext-id>/` existe. Une commande `speckit.research.*`
+declaree par un preset seul est donc **silencieusement ignoree** — l'assistant se plaint alors
+d'une skill introuvable. Le namespace `research` appartient a l'extension ; c'est elle qui cree
+le repertoire qui rend ces commandes valides.
+
+### Le flag `--dev`
+
+Il est necessaire pour installer depuis un chemin local. Sans lui, Spec Kit cherche dans son
+catalogue en ligne et retourne une erreur "not found in catalog". Attention, la syntaxe differe
+entre les deux primitives :
+
+```bash
+specify extension add --dev ./extension    # --dev est un drapeau, le chemin est l'argument
+specify preset add --dev ./preset          # --dev prend le chemin en valeur
+```
 
 Vous pouvez definir une priorite si vous empilez plusieurs presets :
 
 ```bash
-specify preset add --dev ./speckit-research-preset --priority 5
+specify preset add --dev ./preset --priority 5
 ```
 
-Pour verifier l'installation : `specify preset list`
+Pour verifier l'installation : `specify extension list` et `specify preset list`.
+
+### Bundle
+
+`bundle.yml` epingle les deux composants en une unite versionnee. `specify bundle install
+ai-research` ne fonctionne qu'une fois l'extension et le preset publies dans un catalogue —
+`bundle install` delegue a `specify extension add <id>` et `specify preset add <id>`, qui
+resolvent par identifiant. En local, les deux commandes `--dev` restent la voie a suivre.
+
+```bash
+specify bundle validate --offline        # verifier le manifeste
+specify bundle build --output dist/      # produire l'archive distribuable
+```
 
 ## Fonctionnement des serveurs MCP
 
@@ -114,9 +150,9 @@ Cree le repertoire `specs/001-impact-agents-llm/` avec :
 ### Etape 3 — Explorer les pistes
 
 ```
-/speckit.plan           # Prochaine piste pending
-/speckit.plan 5         # Explorer les 5 prochaines
-/speckit.plan L0042     # Explorer une piste specifique
+/speckit.research.explore           # Prochaine piste pending
+/speckit.research.explore 5         # Explorer les 5 prochaines
+/speckit.research.explore L0042     # Explorer une piste specifique
 ```
 
 Pour chaque piste : recherche via MCP, collecte du contenu, creation de la fiche, scoring multicriteres, mise a jour de leads.json/ontology.md/references.bib, verification du checkpoint.
@@ -124,9 +160,9 @@ Pour chaque piste : recherche via MCP, collecte du contenu, creation de la fiche
 **Contenu des sources et articles non telecharges.** Le contenu complet d'un article academique
 n'est pas toujours accessible (paywall, absence de Sci-Hub, preprint uniquement) : c'est normal.
 Chaque piste enregistre donc un `source_status` (`full_text`, `abstract_only`, `metadata_only`,
-`failed`). A la fin de `/speckit.plan`, un **bilan contenu** indique combien de pistes ont ete
+`failed`). A la fin de `/speckit.research.explore`, un **bilan contenu** indique combien de pistes ont ete
 analysees sur leur texte integral, et liste les articles restant a (re)telecharger avec leur ID,
-leur statut et leur DOI/URL. Pour reessayer une piste : `/speckit.plan LXXXX`. Vous pouvez aussi
+leur statut et leur DOI/URL. Pour reessayer une piste : `/speckit.research.explore LXXXX`. Vous pouvez aussi
 deposer manuellement un PDF dans `sources/[axe]/` puis re-scorer via `/speckit.research.score LXXXX`.
 Le checkpoint reprend ce bilan pour eviter de conclure une recherche sur des sources superficielles.
 
@@ -141,11 +177,11 @@ Se declenche automatiquement ou peut etre appele manuellement. Produit : metriqu
 ### Etape 5 — Evaluer et comparer
 
 ```
-/speckit.tasks                    # Tableau de bord complet
-/speckit.tasks L0001 L0003 L0007  # Comparaison de pistes
-/speckit.tasks top 5              # Les 5 meilleures
-/speckit.tasks gaps               # Lacunes identifiees
-/speckit.tasks axe:industriel     # Filtrer par axe
+/speckit.research.dashboard                    # Tableau de bord complet
+/speckit.research.dashboard L0001 L0003 L0007  # Comparaison de pistes
+/speckit.research.dashboard top 5              # Les 5 meilleures
+/speckit.research.dashboard gaps               # Lacunes identifiees
+/speckit.research.dashboard axe:industriel     # Filtrer par axe
 ```
 
 ### Etape 6 — Produire le livrable
@@ -165,7 +201,7 @@ Genere le livrable selon le type defini dans spec.md : article de synthese, rapp
 
 ## Routage des outils MCP
 
-Le preset route automatiquement vers le bon outil, mais voici la logique explicite :
+Les commandes de l'extension routent automatiquement vers le bon outil, mais voici la logique explicite :
 
 - **Trouver un article academique** → `paper-search` (pas `web-fetch`, pas `web-search`)
 - **Lire le contenu d'un article** → `paper-search` telecharge via Sci-Hub (pas `web-fetch`)

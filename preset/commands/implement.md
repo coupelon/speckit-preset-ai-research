@@ -130,6 +130,6 @@ Criteres non satisfaits :
 
 ## Prochaine etape
 
-- Criteres manquants → retour a `/speckit.plan` pour explorer davantage
+- Criteres manquants → retour a `/speckit.research.explore` pour explorer davantage
 - Livrable satisfaisant → revue manuelle et publication
 - Ajustements → modifier et relancer `/speckit.implement`

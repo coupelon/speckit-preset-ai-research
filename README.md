@@ -1,10 +1,17 @@
-# AI Research — Preset Spec Kit
+# AI Research — Bundle Spec Kit
 
-Preset pour [GitHub Spec Kit](https://github.com/github/spec-kit) qui transforme le workflow spec-driven en un framework de recherche systematique iterative.
+Bundle pour [GitHub Spec Kit](https://github.com/github/spec-kit) qui transforme le workflow spec-driven en un framework de recherche systematique iterative.
 
 ## Qu'est-ce que c'est ?
 
-Ce preset remplace les 5 commandes standard de Spec Kit par des equivalents orientes recherche, et ajoute 2 commandes supplementaires. Il permet de mener une recherche structuree sur n'importe quel sujet, en explorant des pistes de maniere iterative avec un scoring de confiance multicriteres.
+Le bundle `ai-research` compose deux primitives Spec Kit, chacune dans son role :
+
+| Composant | Role | Contenu |
+|-----------|------|---------|
+| **Extension `research`** | Apporter une activite que le cycle core ne connait pas | 4 commandes `speckit.research.*`, 2 agents, 2 templates, la config MCP |
+| **Preset `ai-research`** | Relire les creneaux core en vocabulaire recherche | 3 commandes core surchargees, 2 stubs de redirection, 2 templates |
+
+Ce decoupage suit la doctrine Spec Kit : un preset *« customize how Spec Kit works — overriding command files, template files and script files without changing any tooling »*, une extension *« add new capabilities — domain-specific commands, external tool integrations, quality gates »*. L'exploration de pistes n'occupe aucun creneau du cycle core : elle vit donc dans l'extension, pas dans un `speckit.plan` detourne.
 
 **Principes :**
 
@@ -23,7 +30,7 @@ Ce preset remplace les 5 commandes standard de Spec Kit par des equivalents orie
 
 ## Pre-requis
 
-- [Spec Kit](https://github.com/github/spec-kit) >= v0.6.0
+- [Spec Kit](https://github.com/github/spec-kit) >= v0.14.0 (les bundles et la resolution des commandes d'extension necessitent cette version)
 - Node.js >= 18
 - [uv](https://github.com/astral-sh/uv) (gestionnaire de packages Python)
 - Un outil AI compatible Spec Kit
@@ -31,21 +38,42 @@ Ce preset remplace les 5 commandes standard de Spec Kit par des equivalents orie
 
 ## Installation
 
+### En developpement local (depuis ce depot)
+
+L'extension doit etre installee **avant** le preset : les stubs de redirection du preset
+referencent les commandes `speckit.research.*`.
+
 ```bash
-# 1. Installer le preset dans votre projet
-specify preset add --dev ./speckit-research-preset
+# 1. L'extension (l'activite de recherche)
+specify extension add --dev ./extension
 
-# 2. Copier le fichier de contexte a la racine du projet
-cp speckit-research-preset/AGENTS.md ./AGENTS.md
+# 2. Le preset (la localisation des creneaux core)
+specify preset add --dev ./preset
 
-# 3. Copier la config MCP adaptee a votre outil AI (UNE seule des deux lignes)
+# 3. Copier le fichier de contexte a la racine du projet
+cp AGENTS.md ./AGENTS.md
+
+# 4. Copier la config MCP adaptee a votre outil AI (UNE seule des deux lignes)
 
 # -> Si vous utilisez Claude Code :
-cp speckit-research-preset/.mcp.json ./.mcp.json
+cp extension/.mcp.json ./.mcp.json
 
 # -> Si vous utilisez OpenCode :
-cp speckit-research-preset/opencode.json ./opencode.json
+cp extension/opencode.json ./opencode.json
 ```
+
+### Depuis un catalogue (une fois le bundle publie)
+
+```bash
+specify bundle install ai-research
+```
+
+`specify bundle install` resout les deux composants epingles dans `bundle.yml` et les installe
+via la machinerie de chaque primitive. Cette voie exige que l'extension et le preset soient
+publies dans un catalogue : en local, utilisez les deux commandes `--dev` ci-dessus.
+
+Pour produire l'archive distribuable : `specify bundle build --output dist/`.
+Pour verifier le manifeste : `specify bundle validate --offline`.
 
 ## Configuration
 
@@ -72,43 +100,67 @@ Optionnel : [SearXNG](https://github.com/searxng/searxng) pour un meta-moteur au
 
 ## Commandes
 
+Creneaux du cycle core, relus en vocabulaire recherche (**preset**) :
+
 | Commande | Description |
 |----------|-------------|
 | `/speckit.constitution` | Etablir les principes du projet (interactif, une seule fois) |
 | `/speckit.specify` | Definir un sujet de recherche avec questions et criteres de succes |
-| `/speckit.plan` | Explorer les pistes (boucle iterative avec scoring) |
-| `/speckit.tasks` | Evaluer, comparer et trier les pistes |
 | `/speckit.implement` | Produire le livrable final |
+
+Activite de recherche (**extension**) :
+
+| Commande | Description |
+|----------|-------------|
+| `/speckit.research.explore` | Explorer les pistes (boucle iterative avec scoring) |
 | `/speckit.research.checkpoint` | Synthese intermediaire (auto toutes les N pistes) |
+| `/speckit.research.dashboard` | Evaluer, comparer et trier les pistes |
 | `/speckit.research.score` | Scorer ou re-evaluer une piste specifique |
+
+Creneaux non utilises : `/speckit.plan` et `/speckit.tasks` n'ont pas d'equivalent dans cette
+methodologie. Le preset les remplace par des stubs qui redirigent vers
+`/speckit.research.explore` et `/speckit.research.dashboard`, pour eviter qu'un reflexe de
+frappe ne fasse basculer l'utilisateur dans le workflow de developpement logiciel.
 
 ## Workflow
 
 ```
-constitution → specify → plan (boucle) → checkpoint (periodique) → tasks → implement
+constitution → specify → research.explore (boucle) → research.checkpoint (periodique) → research.dashboard → implement
 ```
 
 1. **Constitution** — Repondre aux questions interactives pour configurer les parametres (grille de scoring, seuils, axes, checkpoint). Une seule fois par projet.
 2. **Specify** — Definir le sujet : problematique, questions de recherche priorisees, perimetre, criteres de succes (Given/When/Then).
-3. **Plan** — Boucle principale. Chaque iteration explore une piste, collecte des donnees via MCP, cree une fiche, score, et detecte de nouvelles pistes dans les references.
-4. **Checkpoint** — Synthese automatique toutes les N pistes. Analyse la couverture des questions, detecte les desequilibres d'axes, recommande de continuer, pivoter ou conclure.
-5. **Tasks** — Tableau de bord, comparaisons, filtrage, analyse de gaps.
+3. **Research.explore** — Boucle principale. Chaque iteration explore une piste, collecte des donnees via MCP, cree une fiche, score, et detecte de nouvelles pistes dans les references.
+4. **Research.checkpoint** — Synthese automatique toutes les N pistes. Analyse la couverture des questions, detecte les desequilibres d'axes, recommande de continuer, pivoter ou conclure.
+5. **Research.dashboard** — Tableau de bord, comparaisons, filtrage, analyse de gaps.
 6. **Implement** — Production du livrable (article, rapport, demo, outil).
 
-## Structure du preset
+## Structure du depot
 
 ```
-speckit-research-preset/
-  preset.yml               # Manifeste Spec Kit
-  README.md                # Ce document
-  GUIDE-UTILISATION.md     # Guide d'utilisation detaille
-  opencode.json            # Config MCP pour OpenCode (a personnaliser)
-  .mcp.json                # Config MCP pour Claude Code (a personnaliser)
-  AGENTS.md                # Contexte projet (a copier a la racine)
-  commands/                # 7 commandes Spec Kit
-  templates/               # 4 templates (constitution, spec, plan, tasks)
-  agents/                  # 2 agents (lead-scorer, ontologist)
+speckit-preset-ai-research/
+  bundle.yml                 # Manifeste de bundle (compose extension + preset)
+  README.md                  # Ce document
+  GUIDE-UTILISATION.md       # Guide d'utilisation detaille
+  AGENTS.md                  # Contexte projet (a copier a la racine)
+
+  extension/                 # Extension `research` — l'activite de recherche
+    extension.yml
+    .mcp.json                # Config MCP pour Claude Code (a personnaliser)
+    opencode.json            # Config MCP pour OpenCode (a personnaliser)
+    commands/                # explore, checkpoint, score, dashboard
+    templates/               # lead-template, dashboard-template
+    agents/                  # lead-scorer, ontologist
+
+  preset/                    # Preset `ai-research` — localisation du cycle core
+    preset.yml
+    commands/                # constitution, specify, implement + stubs plan/tasks
+    templates/               # constitution-template, spec-template
 ```
+
+Une fois installee, l'extension est deployee dans `.specify/extensions/research/` : les commandes
+y referencent leurs templates et agents par chemin (ex.
+`.specify/extensions/research/templates/lead-template.md`).
 
 ## Compatibilite
 

@@ -11,7 +11,7 @@ Le scoring est un processus reproductible et trace qui attribue un score de conf
 a une piste en utilisant les outils MCP pour collecter des metriques objectives.
 
 Cette commande peut etre utilisee :
-- Lors de l'exploration initiale (appelee par `/speckit.plan`)
+- Lors de l'exploration initiale (appelee par `/speckit.research.explore`)
 - Pour re-evaluer une piste apres un certain temps
 - Pour scorer une piste ajoutee manuellement
 
@@ -167,6 +167,6 @@ Piste L0042 : [Titre]
 
 ## Prochaine etape
 
-- Continuer l'exploration → `/speckit.plan`
-- Voir le classement → `/speckit.tasks`
+- Continuer l'exploration → `/speckit.research.explore`
+- Voir le classement → `/speckit.research.dashboard`
 - Checkpoint → `/speckit.research.checkpoint`

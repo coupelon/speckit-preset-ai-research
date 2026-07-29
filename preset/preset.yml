@@ -1,0 +1,77 @@
+schema_version: "1.0"
+
+preset:
+  id: "ai-research"
+  name: "AI Research"
+  version: "1.0.0"
+  description: "Localisation du cycle Spec Kit pour la recherche : constitution, specify et implement parlent recherche au lieu de developpement logiciel"
+  author: "Olivier Coupelon"
+  license: "MIT"
+
+requires:
+  speckit_version: ">=0.14.0"
+
+provides:
+  templates:
+    # --- Creneaux core dont la semantique est conservee -------------------
+    # Ces trois commandes occupent le meme creneau que dans le cycle core,
+    # avec le vocabulaire de la recherche. C'est le mandat du preset :
+    # "overriding command files, template files and script files without
+    # changing any tooling".
+
+    # Gouvernance projet : principes et grille de scoring
+    - type: "command"
+      name: "speckit.constitution"
+      file: "commands/constitution.md"
+      description: "Etablir les principes et standards de qualite de la recherche"
+      replaces: "speckit.constitution"
+
+    # Definir le "quoi" : sujet, questions de recherche, criteres de succes
+    - type: "command"
+      name: "speckit.specify"
+      file: "commands/specify.md"
+      description: "Definir un sujet de recherche : probleme, criteres de succes, perimetre"
+      replaces: "speckit.specify"
+
+    # Produire l'artefact final
+    - type: "command"
+      name: "speckit.implement"
+      file: "commands/implement.md"
+      description: "Produire un livrable a partir des pistes selectionnees"
+      replaces: "speckit.implement"
+
+    # --- Creneaux core rediriges vers l'extension ------------------------
+    # plan et tasks ne sont pas des creneaux de cette methodologie : le
+    # travail correspondant vit dans l'extension research. On les remplace
+    # par des stubs de redirection plutot que de les laisser servir le
+    # workflow logiciel a un utilisateur qui tape la commande par reflexe.
+
+    - type: "command"
+      name: "speckit.plan"
+      file: "commands/plan.md"
+      description: "Rediriger vers /speckit.research.explore"
+      replaces: "speckit.plan"
+
+    - type: "command"
+      name: "speckit.tasks"
+      file: "commands/tasks.md"
+      description: "Rediriger vers /speckit.research.dashboard"
+      replaces: "speckit.tasks"
+
+    # --- Templates d'artefacts core --------------------------------------
+    - type: "template"
+      name: "constitution-template"
+      file: "templates/constitution-template.md"
+      description: "Template de principes de recherche"
+      replaces: "constitution-template"
+
+    - type: "template"
+      name: "spec-template"
+      file: "templates/spec-template.md"
+      description: "Template de definition de sujet de recherche"
+      replaces: "spec-template"
+
+tags:
+  - "research"
+  - "methodology"
+  - "academic"

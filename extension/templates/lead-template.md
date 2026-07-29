@@ -1,6 +1,6 @@
 # Piste LXXXX — [Titre de la source]
 
-> Exploree via `/speckit.plan` le [date ISO].
+> Exploree via `/speckit.research.explore` le [date ISO].
 
 ## Identite
 

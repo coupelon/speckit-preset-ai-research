@@ -111,10 +111,10 @@ Proposer une des actions suivantes :
 
 | Situation | Action recommandee |
 |-----------|-------------------|
-| Questions P1 bien couvertes, P2 partielles | Continuer `/speckit.plan` ciblant P2 |
+| Questions P1 bien couvertes, P2 partielles | Continuer `/speckit.research.explore` ciblant P2 |
 | Toutes les questions couvertes | Passer a `/speckit.implement` |
 | Qualite insuffisante | Relancer `/speckit.research.score` sur les pistes douteuses |
-| Desequilibre d'axe | Cibler l'axe sous-represente dans `/speckit.plan` |
+| Desequilibre d'axe | Cibler l'axe sous-represente dans `/speckit.research.explore` |
 | Explosion de pistes | Augmenter le seuil et abandonner les pistes < nouveau seuil |
 | Saturation | Passer a `/speckit.implement` ou elargir le perimetre |
 
@@ -151,6 +151,6 @@ Valider ? Ajustements possibles :
 
 ## Prochaine etape
 
-- Continuer → `/speckit.plan`
+- Continuer → `/speckit.research.explore`
 - Produire → `/speckit.implement`
-- Evaluer → `/speckit.tasks`
+- Evaluer → `/speckit.research.dashboard`

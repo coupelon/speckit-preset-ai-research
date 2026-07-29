@@ -1,6 +1,6 @@
 # Evaluation des pistes — ###-[slug]
 
-> Genere via `/speckit.tasks` le [date ISO].
+> Genere via `/speckit.research.dashboard` le [date ISO].
 
 ## Metriques globales
 
