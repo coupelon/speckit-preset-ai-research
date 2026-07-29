@@ -5,24 +5,50 @@ Ce document complete le [README](README.md) avec les instructions pas a pas, les
 ## Checklist de demarrage rapide
 
 ```
-[ ] Spec Kit >= 0.14.0 installe
+[ ] Spec Kit >= 0.14.0 installe          (specify --version)
 [ ] Node.js >= 18 installe
 [ ] uv installe
-[ ] specify extension add --dev ./extension
-[ ] specify preset add --dev ./preset
+[ ] Projet Spec Kit initialise           (specify init --here --integration <votre outil>)
+[ ] specify extension add --dev <repo>/extension     <- EN PREMIER
+[ ] specify preset add --dev <repo>/preset
+[ ] cp <repo>/AGENTS.md a la racine du projet
 [ ] Copier la config MCP a la racine du projet (voir README > Configuration)
-[ ] cp AGENTS.md a la racine du projet
-[ ] Lancer votre outil AI et verifier que les MCP se connectent
+[ ] Personnaliser chemin paper-search + email OpenAlex dans la config MCP
+[ ] Lancer votre outil AI et verifier que les 5 MCP se connectent
+[ ] Verifier que /speckit.research.explore est proposee
 [ ] /speckit.constitution
 ```
 
-## Notes d'installation
+## Notes d'installation locale
+
+C'est la seule voie operationnelle aujourd'hui — voir [Bundle](#bundle) plus bas pour pourquoi
+`specify bundle install` n'est pas utilisable.
 
 ### Ordre des deux composants
 
-Installer l'**extension avant le preset**. Les stubs `/speckit.plan` et `/speckit.tasks` du preset
-renvoient vers les commandes `speckit.research.*` : sans l'extension, la redirection pointe dans
-le vide.
+**L'ordre n'est pas contraignant** — les deux sens fonctionnent, verifie sur des projets neufs.
+Installer l'extension en premier reste recommande, pour une seule raison : les stubs
+`/speckit.plan` et `/speckit.tasks` du preset renvoient vers les commandes `speckit.research.*`,
+donc commencer par l'extension evite une fenetre pendant laquelle la redirection ne mene nulle
+part. Si vous avez commence par le preset, il n'y a rien a rejouer.
+
+Le filtre a trois segments decrit ci-dessous ne cree **pas** de contrainte d'ordre ici : il ne
+s'applique qu'aux commandes `speckit.<ext-id>.<cmd>` declarees par un *preset*, et ce preset n'en
+declare plus aucune. Les 4 commandes `research` sont declarees par l'extension, qui cree
+elle-meme le repertoire qui les rend valides.
+
+### Verifier l'installation
+
+```bash
+specify extension list                    # research v1.0.0, enabled
+specify preset list                       # ai-research v1.0.0, priorite 10
+specify preset resolve spec-template      # doit designer la couche ai-research
+specify preset resolve constitution-template
+```
+
+Cote outil AI, les 4 commandes `/speckit.research.*` doivent apparaitre, et `/speckit.plan`
+doit afficher son message de redirection au lieu du workflow de planification logicielle.
+Pour Claude Code, les skills correspondantes sont dans `.claude/skills/speckit-research-*/`.
 
 ### Pourquoi deux composants
 
@@ -49,19 +75,35 @@ Vous pouvez definir une priorite si vous empilez plusieurs presets :
 specify preset add --dev ./preset --priority 5
 ```
 
-Pour verifier l'installation : `specify extension list` et `specify preset list`.
+## Bundle
 
-### Bundle
+> [!WARNING]
+> **`specify bundle install ai-research` ne fonctionne pas : ce bundle n'est pas publie.**
+> Utilisez l'installation locale decrite ci-dessus.
 
-`bundle.yml` epingle les deux composants en une unite versionnee. `specify bundle install
-ai-research` ne fonctionne qu'une fois l'extension et le preset publies dans un catalogue —
-`bundle install` delegue a `specify extension add <id>` et `specify preset add <id>`, qui
-resolvent par identifiant. En local, les deux commandes `--dev` restent la voie a suivre.
+`bundle.yml` epingle les deux composants (extension `research` v1.0.0 + preset `ai-research`
+v1.0.0) en une unite versionnee. Mais `bundle install` resout ses composants **par identifiant
+dans un catalogue** : il delegue a `specify extension add research` et
+`specify preset add ai-research`. Deux consequences :
+
+- le champ `source` d'un composant n'est pas exploite a l'installation ;
+- il n'existe pas d'equivalent `--dev` pour un bundle.
+
+Autrement dit, un bundle ne devient installable qu'une fois **ses composants** publies dans un
+catalogue — publier le bundle seul ne suffirait pas. C'est un manifeste de composition et de
+distribution, pas un conteneur de code.
+
+Ce qui fonctionne des maintenant, en local :
 
 ```bash
-specify bundle validate --offline        # verifier le manifeste
-specify bundle build --output dist/      # produire l'archive distribuable
+specify bundle validate --offline        # verifie que le manifeste est bien forme et que les
+                                         # references resolvent contre l'installe / l'embarque
+specify bundle build --output dist/      # produit ai-research-1.0.0.zip (25 fichiers)
 ```
+
+Note sur `bundle build` : le packager n'exclut que `.git`, `__pycache__` et `.DS_Store`, sans
+mecanisme de type `.bundleignore`. Tout autre fichier present a la racine du depot se retrouve
+dans l'archive — verifier son contenu avant publication.
 
 ## Fonctionnement des serveurs MCP
 

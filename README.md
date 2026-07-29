@@ -38,42 +38,78 @@ Ce decoupage suit la doctrine Spec Kit : un preset *« customize how Spec Kit wo
 
 ## Installation
 
-### En developpement local (depuis ce depot)
+Deux voies existent. **Seule l'installation locale fonctionne aujourd'hui** — voir l'avertissement
+de la section bundle.
 
-L'extension doit etre installee **avant** le preset : les stubs de redirection du preset
-referencent les commandes `speckit.research.*`.
+### Voie 1 — Installation locale, composant par composant (la seule operationnelle)
+
+Depuis la racine d'un projet Spec Kit deja initialise (`specify init`), en supposant ce depot
+clone dans `../speckit-preset-ai-research` :
 
 ```bash
-# 1. L'extension (l'activite de recherche)
-specify extension add --dev ./extension
+REPO=../speckit-preset-ai-research
 
-# 2. Le preset (la localisation des creneaux core)
-specify preset add --dev ./preset
+# 1. L'extension `research` — l'activite de recherche.
+#    Recommande en premier : les stubs du preset renvoient vers speckit.research.*,
+#    donc installer l'extension d'abord evite une fenetre ou la redirection ne mene
+#    nulle part. L'ordre inverse fonctionne aussi (voir le guide).
+specify extension add --dev "$REPO/extension"
 
-# 3. Copier le fichier de contexte a la racine du projet
-cp AGENTS.md ./AGENTS.md
+# 2. Le preset `ai-research` — la localisation des creneaux core.
+specify preset add --dev "$REPO/preset"
 
-# 4. Copier la config MCP adaptee a votre outil AI (UNE seule des deux lignes)
+# 3. Le fichier de contexte, a la racine du projet.
+cp "$REPO/AGENTS.md" ./AGENTS.md
 
-# -> Si vous utilisez Claude Code :
-cp extension/.mcp.json ./.mcp.json
-
-# -> Si vous utilisez OpenCode :
-cp extension/opencode.json ./opencode.json
+# 4. La config MCP adaptee a votre outil AI (UNE seule des deux lignes).
+cp "$REPO/extension/.mcp.json"     ./.mcp.json       # Claude Code
+cp "$REPO/extension/opencode.json" ./opencode.json   # OpenCode
 ```
 
-### Depuis un catalogue (une fois le bundle publie)
+Attention, la syntaxe de `--dev` differe entre les deux primitives : c'est un **drapeau** pour
+`extension add` (le chemin est l'argument positionnel) et une **option a valeur** pour
+`preset add`. Les deux formes ci-dessus sont correctes telles quelles.
+
+Verifier le resultat :
+
+```bash
+specify extension list                  # research v1.0.0
+specify preset list                     # ai-research v1.0.0 (priorite 10)
+specify preset resolve spec-template    # doit designer la couche ai-research
+```
+
+Vous devez voir apparaitre les 4 commandes `/speckit.research.*` dans votre outil AI, et
+`/speckit.plan` / `/speckit.tasks` doivent afficher leur message de redirection. Si les commandes
+`research` sont absentes, c'est l'etape 1 qui a echoue : verifier avec `specify extension list`
+que `research` est bien installee et `enabled`.
+
+Etape suivante : [Configuration](#configuration) — deux valeurs a personnaliser dans le fichier MCP.
+
+### Voie 2 — Installation par bundle
+
+> [!WARNING]
+> **Indisponible : ce bundle n'est pas publie.** `specify bundle install` resout ses composants
+> **par identifiant dans un catalogue** — l'installation delegue a `specify extension add research`
+> et `specify preset add ai-research` (voir `bundler/services/primitives.py`). Le champ `source`
+> d'un composant n'est pas exploite a l'installation, et il n'existe pas d'equivalent `--dev`
+> pour un bundle : **il n'est donc pas possible d'installer ce depot par `bundle install`
+> aujourd'hui.** Utilisez la voie 1.
+
+Une fois l'extension et le preset publies dans un catalogue, l'installation deviendra :
 
 ```bash
 specify bundle install ai-research
 ```
 
-`specify bundle install` resout les deux composants epingles dans `bundle.yml` et les installe
-via la machinerie de chaque primitive. Cette voie exige que l'extension et le preset soient
-publies dans un catalogue : en local, utilisez les deux commandes `--dev` ci-dessus.
+En attendant, le manifeste `bundle.yml` sert deja a deux choses, qui fonctionnent en local :
 
-Pour produire l'archive distribuable : `specify bundle build --output dist/`.
-Pour verifier le manifeste : `specify bundle validate --offline`.
+```bash
+specify bundle validate --offline      # verifier que le manifeste est bien forme
+specify bundle build --output dist/    # produire l'archive versionnee ai-research-1.0.0.zip
+```
+
+`bundle validate --offline` verifie les references contre les composants installes ou embarques,
+sans acces reseau. `bundle build` produit l'artefact distribuable qui servira a la publication.
 
 ## Configuration
 
