@@ -139,7 +139,9 @@ Chaque nouvelle piste doit avoir au minimum un **titre complet exploitable** pou
 
 **Etape 4 — Scoring**
 
-Calculer le score de confiance (0-100) selon la grille de la constitution :
+Deleguer le calcul a l'agent `.specify/extensions/research/agents/agent-lead-scorer.md`
+(lire ses regles et les appliquer) afin que le score soit produit de la meme facon ici et
+dans `/speckit.research.score`. Score de confiance (0-100) selon la grille de la constitution :
 
 | Critere | Source de donnees MCP |
 |---------|----------------------|
@@ -154,7 +156,8 @@ Calculer le score de confiance (0-100) selon la grille de la constitution :
 1. `leads.json` : piste → `"explored"`, score, `source_status`, nouvelles pistes `"pending"` (dedupliquees)
    - Si `source_status` vaut `abstract_only`, `metadata_only` ou `failed` : ajouter `"content_incomplete": true`
      sur la piste afin qu'elle apparaisse dans la liste des articles a retelecharger.
-2. `ontology.md` : integrer les idees avec references [LXXXX]
+2. `ontology.md` : integrer les idees avec references [LXXXX], en suivant les regles de
+   l'agent `.specify/extensions/research/agents/agent-ontologist.md`
 3. `references.bib` : si score >= seuil constitution, ajouter :
 ```bibtex
 @online{cle-unique,

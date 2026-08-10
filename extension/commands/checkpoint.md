@@ -89,7 +89,8 @@ Niveaux de couverture :
 
 ### Etape 3 — Analyse de l'ontologie
 
-Lire `ontology.md` et evaluer :
+Se referer a l'agent `.specify/extensions/research/agents/agent-ontologist.md` pour les criteres
+de structuration attendus. Lire `ontology.md` et evaluer :
 - Nombre de concepts identifies
 - Profondeur de l'arbre (niveaux de hierarchie)
 - Branches isolees (concepts sans lien)

@@ -110,7 +110,7 @@ dans l'archive — verifier son contenu avant publication.
 Les serveurs MCP sont lances automatiquement par votre outil AI au moment ou il en a besoin. Aucune installation prealable n'est requise pour la plupart :
 
 - **npx** (openalex, arxiv, web-search, searxng) : `npx -y package-name` telecharge et execute le package npm automatiquement a la premiere utilisation, puis le met en cache. Seul pre-requis : Node.js >= 18.
-- **uvx** (web-fetch) : equivalent de npx pour l'ecosysteme Python. Execute `mcp-server-fetch` directement. Pre-requis : `uv` installe (`pip install uv` ou `brew install uv`).
+- **uvx** (web-fetch) : equivalent de npx pour l'ecosysteme Python. Execute `mcp-server-fetch` directement, avec `--with 'mcp<2'` qui epingle le SDK `mcp` sur la serie 1.x (sans cette contrainte, le serveur ne demarre pas). Pre-requis : `uv` installe (`pip install uv` ou `brew install uv`).
 - **uv run** (paper-search) : execute votre instance locale. Le chemin du repertoire est configure dans le fichier de config MCP.
 
 Dans les trois cas, le premier lancement telecharge les dependances automatiquement, puis les utilise depuis le cache.

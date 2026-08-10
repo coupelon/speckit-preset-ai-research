@@ -19,7 +19,10 @@ Tu definis un nouveau sujet de recherche. Cette etape est l'equivalent du "Speci
 2. Sinon, demander le sujet de recherche
 3. Scanner les specs existantes dans `specs/` pour attribuer le prochain numero (001, 002...)
 4. Creer le repertoire `specs/###-slug-du-sujet/`
-5. Generer `specs/###-slug-du-sujet/spec.md` en suivant le template
+5. Generer `specs/###-slug-du-sujet/spec.md` en suivant le template de ce preset :
+   `.specify/presets/ai-research/templates/spec-template.md` — et non
+   `.specify/templates/spec-template.md`, qui est la version core (specification de
+   fonctionnalite logicielle). La structure attendue est rappelee ci-dessous.
 
 ## Template de spec.md
 

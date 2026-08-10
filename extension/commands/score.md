@@ -22,6 +22,11 @@ CRITICAL :
 - `.specify/memory/constitution.md` doit exister (grille de scoring)
 - $ARGUMENTS doit contenir un ID de piste (ex: "L0042") ou "all" pour tout re-scorer
 
+## Agent de reference
+
+Le calcul est confie a l'agent `.specify/extensions/research/agents/agent-lead-scorer.md` :
+lire ses regles et les appliquer. La grille ci-dessous en est le resume operationnel.
+
 ## Grille de scoring
 
 | Critere | Poids | Source MCP | Methode |

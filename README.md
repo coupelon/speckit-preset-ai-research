@@ -132,6 +132,10 @@ Pour verifier que tout fonctionne, lancez votre outil AI et verifiez que les 5 s
 | web-search | `@iflow-mcp/open-websearch` | Recherche web multi-moteurs (Bing, DuckDuckGo, Brave, Startpage) |
 | web-fetch | `mcp-server-fetch` | Lecture du contenu d'une URL |
 
+`web-fetch` est lance en `uvx --with 'mcp<2' mcp-server-fetch` : la contrainte epingle le SDK
+`mcp` sur la serie 1.x, sans laquelle le serveur ne demarre pas. Ne pas la retirer des fichiers
+de configuration MCP.
+
 Optionnel : [SearXNG](https://github.com/searxng/searxng) pour un meta-moteur auto-heberge (necessite Docker). Voir le [guide d'utilisation](GUIDE-UTILISATION.md) pour la configuration.
 
 ## Commandes

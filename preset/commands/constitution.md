@@ -84,7 +84,10 @@ Demander si un format de cle de citation different est prefere.
 
 ### Phase 4 — Generation
 
-1. Lire le template dans `.specify/templates/constitution-template.md`
+1. Lire le template de ce preset : `.specify/presets/ai-research/templates/constitution-template.md`
+   (`specify preset resolve constitution-template` confirme ce chemin). Ne PAS lire
+   `.specify/templates/constitution-template.md` : c'est la version core, orientee
+   developpement logiciel, que ce preset remplace precisement.
 2. Remplir avec toutes les valeurs validees par l'utilisateur
 3. Ecrire le resultat dans `.specify/memory/constitution.md`
 
